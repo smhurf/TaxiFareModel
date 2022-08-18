@@ -53,3 +53,53 @@ pypi_test:
 
 pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
+
+# path to the file to upload to GCP (the path to the file should be absolute or should match the directory where the make command is ran)
+# replace with your local path to the `train_1k.csv` and make sure to put the path between quotes
+LOCAL_PATH="/Users/heshimei/code/smhurf/TaxiFareModel/raw_data/train_1k.csv"
+
+# bucket directory in which to store the uploaded file (`data` is an arbitrary name that we choose to use)
+BUCKET_FOLDER=data
+
+# name for the uploaded file inside of the bucket (we choose not to rename the file that we upload)
+BUCKET_FILE_NAME=$(shell basename ${LOCAL_PATH})
+BUCKET_NAME = smhurfy_bucket
+
+upload_data:
+    # @gsutil cp train_1k.csv gs://wagon-ml-my-bucket-name/data/train_1k.csv
+		@gsutil cp ${LOCAL_PATH} gs://${BUCKET_NAME}/${BUCKET_FOLDER}/${BUCKET_FILE_NAME}
+
+# project id - replace with your GCP project id
+PROJECT_ID=lewagon-smhurf
+
+# choose your region from https://cloud.google.com/storage/docs/locations#available_locations
+REGION=europe-west1
+
+set_project:
+	@gcloud config set project ${PROJECT_ID}
+
+create_bucket:
+	@gsutil mb -l ${REGION} -p ${PROJECT_ID} gs://${BUCKET_NAME}
+
+PACKAGE_NAME=TaxiFareModel
+FILENAME=trainer
+
+run_locally:
+	@python -m ${PACKAGE_NAME}.${FILENAME}
+
+gcp_submit_training:
+	gcloud ai-platform jobs submit training ${JOB_NAME} \
+		--job-dir gs://${BUCKET_NAME}/${BUCKET_TRAINING_FOLDER} \
+		--package-path ${PACKAGE_NAME} \
+		--module-name ${PACKAGE_NAME}.${FILENAME} \
+		--python-version=${PYTHON_VERSION} \
+		--runtime-version=${RUNTIME_VERSION} \
+		--region ${REGION} \
+		--stream-logs
+
+clean:
+	@rm -f */version.txt
+	@rm -f .coverage
+	@rm -fr */__pycache__ __pycache__
+	@rm -fr build dist *.dist-info *.egg-info
+	@rm -fr */*.pyc

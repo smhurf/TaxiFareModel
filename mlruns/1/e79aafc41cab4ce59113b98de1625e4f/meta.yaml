@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/heshimei/code/smhurf/TaxiFareModel/mlruns/1/e79aafc41cab4ce59113b98de1625e4f/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '1'
+lifecycle_stage: active
+name: ''
+run_id: e79aafc41cab4ce59113b98de1625e4f
+run_uuid: e79aafc41cab4ce59113b98de1625e4f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1660369513308
+status: 1
+tags: []
+user_id: unknown
