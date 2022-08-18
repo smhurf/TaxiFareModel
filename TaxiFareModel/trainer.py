@@ -12,7 +12,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from params import *
+import params
 
 
 MLFLOW_URI = "https://mlflow.lewagon.ai/"
@@ -79,7 +79,7 @@ class Trainer(object):
 
          # Implement here
         model_directory = 'smhurf-test'
-        storage_upload(model_directory, bucket=BUCKET_NAME, rm=False)
+        storage_upload(model_directory, bucket=params.BUCKET_NAME, rm=False)
         print(f"uploaded model.joblib to gcp cloud storage under \n => {model_directory}")
 
     # MLFlow methods
