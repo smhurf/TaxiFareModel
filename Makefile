@@ -61,6 +61,9 @@ LOCAL_PATH="/Users/heshimei/code/smhurf/TaxiFareModel/raw_data/train_1k.csv"
 # bucket directory in which to store the uploaded file (`data` is an arbitrary name that we choose to use)
 BUCKET_FOLDER=data
 
+# will store the packages uploaded to GCP for the training
+BUCKET_TRAINING_FOLDER = 'trainings'
+
 # name for the uploaded file inside of the bucket (we choose not to rename the file that we upload)
 BUCKET_FILE_NAME=$(shell basename ${LOCAL_PATH})
 BUCKET_NAME = smhurfy_bucket
@@ -75,6 +78,12 @@ PROJECT_ID=lewagon-smhurf
 # choose your region from https://cloud.google.com/storage/docs/locations#available_locations
 REGION=europe-west1
 
+##### Machine configuration - - - - - - - - - - - - - - - -
+
+PYTHON_VERSION=3.7
+FRAMEWORK=scikit-learn
+RUNTIME_VERSION=1.15
+
 set_project:
 	@gcloud config set project ${PROJECT_ID}
 
@@ -83,6 +92,8 @@ create_bucket:
 
 PACKAGE_NAME=TaxiFareModel
 FILENAME=trainer
+
+JOB_NAME=taxi_fare_training_pipeline_$(shell date +'%Y%m%d_%H%M%S')
 
 run_locally:
 	@python -m ${PACKAGE_NAME}.${FILENAME}
@@ -96,10 +107,3 @@ gcp_submit_training:
 		--runtime-version=${RUNTIME_VERSION} \
 		--region ${REGION} \
 		--stream-logs
-
-clean:
-	@rm -f */version.txt
-	@rm -f .coverage
-	@rm -fr */__pycache__ __pycache__
-	@rm -fr build dist *.dist-info *.egg-info
-	@rm -fr */*.pyc

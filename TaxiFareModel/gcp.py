@@ -2,11 +2,12 @@ import os
 
 from google.cloud import storage
 from termcolor import colored
-import params
+
 #BUCKET_NAME = "lewagon-smhurf"  # ⚠️ replace with your BUCKET NAME
+BUCKET_NAME = 'smhurfy_bucket'
 
 
-def storage_upload(model_directory, bucket=params.BUCKET_NAME, rm=False):
+def storage_upload(model_directory, bucket=BUCKET_NAME, rm=False):
     client = storage.Client().bucket(bucket)
 
     storage_location = '{}/{}/{}/{}'.format(
@@ -16,7 +17,7 @@ def storage_upload(model_directory, bucket=params.BUCKET_NAME, rm=False):
         'model.joblib')
     blob = client.blob(storage_location)
     blob.upload_from_filename('model.joblib')
-    print(colored("=> model.joblib uploaded to bucket {} inside {}".format(params.BUCKET_NAME, storage_location),
+    print(colored("=> model.joblib uploaded to bucket {} inside {}".format(BUCKET_NAME, storage_location),
                   "green"))
     if rm:
         os.remove('model.joblib')

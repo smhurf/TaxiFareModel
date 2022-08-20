@@ -2,7 +2,7 @@ import joblib
 from termcolor import colored
 import mlflow
 from TaxiFareModel.data import get_data, clean_data
-from gcp import storage_upload
+from TaxiFareModel.gcp import storage_upload
 from TaxiFareModel.encoders import TimeFeaturesEncoder, DistanceTransformer
 from TaxiFareModel.utils import compute_rmse
 from memoized_property import memoized_property
@@ -12,12 +12,13 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-import params
+
 
 
 MLFLOW_URI = "https://mlflow.lewagon.ai/"
 EXPERIMENT_NAME = "first_experiment"
-
+BUCKET_NAME = 'smhurfy_bucket'
+BUCKET_TRAIN_DATA_PATH = 'data/train_1k.csv'
 
 class Trainer(object):
     def __init__(self, X, y):
@@ -79,7 +80,7 @@ class Trainer(object):
 
          # Implement here
         model_directory = 'smhurf-test'
-        storage_upload(model_directory, bucket=params.BUCKET_NAME, rm=False)
+        storage_upload(model_directory, bucket=BUCKET_NAME, rm=False)
         print(f"uploaded model.joblib to gcp cloud storage under \n => {model_directory}")
 
     # MLFlow methods

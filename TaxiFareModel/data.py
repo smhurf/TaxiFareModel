@@ -1,11 +1,13 @@
 import pandas as pd
-import params
+
+BUCKET_NAME = 'smhurfy_bucket'
+BUCKET_TRAIN_DATA_PATH = 'data/train_1k.csv'
 
 #AWS_BUCKET_PATH = "/Users/heshimei/code/smhurf/TaxiFareModel/raw_data/train.csv"
 
 def get_data(nrows=10_000):
     '''returns a DataFrame with nrows from s3 bucket'''
-    df = pd.read_csv(f"gs://{params.BUCKET_NAME}/{params.BUCKET_TRAIN_DATA_PATH}", nrows=nrows)
+    df = pd.read_csv(f"gs://{BUCKET_NAME}/{BUCKET_TRAIN_DATA_PATH}", nrows=nrows)
     return df
 
 
